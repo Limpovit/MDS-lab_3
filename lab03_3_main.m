@@ -80,6 +80,13 @@ subplot(3, 1, 3), zplane(x)
 
 %=== Завдання #1.5 ===
 %Побудува графіків перехідних процесів
-n = 1;
-...
+n = 10;
+figure()
+[h,t] = stepz(b1, a1, n, fs);
+plot(t, h)
+figure()
+[h,t] = stepz(b2, a2, n, fs);
+plot(t, h)
+
+
 
