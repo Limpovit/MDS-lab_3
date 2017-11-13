@@ -82,11 +82,98 @@ subplot(3, 1, 3), zplane(x)
 %Побудува графіків перехідних процесів
 n = 10;
 figure()
+[h,t] = stepz(b, a, n, fs);
+subplot(3, 1, 1), plot (t, h)
 [h,t] = stepz(b1, a1, n, fs);
-plot(t, h)
-figure()
+subplot(3, 1, 2), plot (t, h)
 [h,t] = stepz(b2, a2, n, fs);
-plot(t, h)
+subplot(3, 1, 3), plot (t, h)
+
+%=== Завдання #2.1 ===
+% Фільтрація ЕКГ при r = 0.6
+fs = 200;
+ecg105 = load('ecg105.txt'); % сигнал ЕКГ
+ecg = ecg105;
+ecgf = filter(b, a, ecg);
+t = (0:length(ecg) - 1)/fs;
+figure()
+subplot(2, 2, 1), plot(t, ecg), title('Сигнал ЕКГ'), grid on, xlim([1.1 2.3]),ylabel('A, мкВ')
+subplot(2, 2, 2), plot(t, ecgf), title('Фільтрований сигнал ЕКГ, r = 0.6'), grid on, xlim([1.1 2.3])
+xlabel('t, мс')
+ylabel('A, мкВ')
+
+%=== Завдання #2.2 ===
+% Фільтрація ЕКГ при r = 0.7 та r = 0.9
+% r = 0.7
+ecgf = filter(b1, a1, ecg);
+subplot(2, 2, 3), plot(t, ecgf), title('Фільтрований сигнал ЕКГ, r = 0.7'), grid on, xlim([1.1 2.3])
+xlabel('t, мс')
+ylabel('A, мкВ')
+% r = 0.9
+ecgf = filter(b2, a2, ecg);
+subplot(2, 2, 4), plot(t, ecgf), title('Фільтрований сигнал ЕКГ, r = 0.9'), grid on, xlim([1.1 2.3])
+xlabel('t, мс')
+ylabel('A, мкВ')
+
+%=== Завдання #3.1 ===
+% Дослідження властивостей режекторного НІХ-фільтру
+fs = 200;
+r =  0.8;
+phi1 = 110*pi/180;
+phi2 = 130*pi/180;
+a1 = [1 - 2 * r * cos(phi1) r^2];  
+a2 = [1 - 2 * r * cos(phi2) r^2];
+a = conv(a1, a2);
+b = [1 1 1]/3;
+H =  filt(b, a);% передавальна функція
+
+%=== Завдання #3.2 ===
+% АЧХ та ФЧХ смугового режекторного НІХ-фільтру
+n = 512;  % кількість точок, що розраховуються
+figure()
+[h,w] = freqz(b, a, n);
+mag = abs(h); 
+phase = angle(h)*180/pi;
+subplot(3, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
+xlabel('Frequency'), ylabel('Magnitude'),
+subplot(3, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
+xlabel('Frequency'), ylabel('Phase')
+% Обчислення нулів фільтру
+x = roots(b);
+% Карта нулів та полюсів фільтру
+subplot(3, 1, 3), zplane(x)
+
+%=== Завдання #3.3 ===
+% Порівняння АЧХ і ФЧХ режекторних НІХ і СІХ-фильтрів
+ figure()
+[h,w] = freqz(b, a, n);
+mag = abs(h); 
+phase = angle(h)*180/pi;
+subplot(2, 2, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ НІХ - фільтра'),
+xlabel('Frequency'), ylabel('Magnitude'),
+subplot(2, 2, 3), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ НІХ - фільтра'),
+xlabel('Frequency'), ylabel('Phase')
+br = [1 0.618 1];   % коефіцієнти різницевого рівняння 
+ar = 1;
+[h, f] = freqz(br, ar, n, fs);
+mag = abs(h); 
+phase = angle(h)*180/pi;
+subplot(2, 2, 2); plot(f, mag), grid on, title('АЧХ СІХ - фільтра'),
+xlabel('Frequency'), ylabel('Magnitude'),
+subplot(2, 2, 4), plot(f, unwrap(phase)), grid on, title('ФЧХ СІХ - фільтра'),
+xlabel('Frequency'), ylabel('Phase'),
+
+%=== Завдання #3.4 ===
+% Фільтрацію сигналу ЕКГ(файл ecg2x60.dat) режекторним фільтром
+fs = 200;
+ecg2x60 = load('ecg2x60.dat'); % сигнал ЕКГ
+ecg = ecg2x60;
+ecgf = filter(b, a, ecg);
+t = (0:length(ecg) - 1)/fs;
+figure()
+plot(t, ecg), title('Сигнал ЕКГ'), grid on, hold on, xlim([0.8 2.3]),ylabel('A, мкВ')
+plot(t, ecgf), title('Фільтрований сигнал ЕКГ'), hold off, grid on, 
+
 
 
 
