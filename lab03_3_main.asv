@@ -24,19 +24,20 @@ a = [1 -2*r*cos(phi) r^2];          % знаменник
 
 %=== Завдання #1.2 ===
 % АЧХ та ФЧХ смугового фільтру 2-го порядку
-n = 512;  % кількість точок, що розраховуються
+n = 5;  % кількість точок, що розраховуються
 figure()
 [h,w] = freqz(b,a,n);
 mag = abs(h); 
 phase = angle(h)*180/pi;
-subplot(3, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
+subplot(2, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
 xlabel('Frequency'), ylabel('Magnitude'),
-subplot(3, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
+subplot(2, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
 xlabel('Frequency'), ylabel('Phase')
 % Обчислення нулів фільтру
 x = roots(b);
 % Карта нулів та полюсів фільтру
-subplot(3, 1, 3), zplane(x)
+figure()
+zplane(x); 
 
 %=== Завдання #1.3 ===
 % r = 0.7
@@ -48,14 +49,15 @@ figure()
 [h,w] = freqz(b1,a1,n);
 mag = abs(h); 
 phase = angle(h)*180/pi;
-subplot(3, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
+subplot(2, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
 xlabel('Frequency'), ylabel('Magnitude'),
-subplot(3, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
+subplot(2, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
 xlabel('Frequency'), ylabel('Phase')
 % Обчислення нулів фільтру
 x = roots(b);
 % Карта нулів та полюсів фільтру
-subplot(3, 1, 3), zplane(x)
+figure()
+zplane(x); 
 
 % r = 0.9
 r = 0.9; 
@@ -66,14 +68,15 @@ figure()
 [h,w] = freqz(b2,a2,n);
 mag = abs(h); 
 phase = angle(h)*180/pi;
-subplot(3, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
+subplot(2, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
 xlabel('Frequency'), ylabel('Magnitude'),
-subplot(3, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
+subplot(2, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
 xlabel('Frequency'), ylabel('Phase')
 % Обчислення нулів фільтру
 x = roots(b);
 % Карта нулів та полюсів фільтру
-subplot(3, 1, 3), zplane(x)
+figure()
+zplane(x); 
 
 %=== Завдання #1.4 ===
 % Визначення добротності заданих фільтрів 
@@ -134,32 +137,81 @@ figure()
 [h,w] = freqz(b, a, n);
 mag = abs(h); 
 phase = angle(h)*180/pi;
-subplot(3, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
+subplot(2, 1, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ'),
 xlabel('Frequency'), ylabel('Magnitude'),
-subplot(3, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
+subplot(2, 1, 2), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ'),
 xlabel('Frequency'), ylabel('Phase')
 % Обчислення нулів фільтру
 x = roots(b);
 % Карта нулів та полюсів фільтру
-subplot(3, 1, 3), zplane(x)
+figure()
+zplane(x); 
 
 %=== Завдання #3.3 ===
 % Порівняння АЧХ і ФЧХ режекторних НІХ і СІХ-фильтрів
-
-br = [1 0.618 1];   
+ figure()
+[h,w] = freqz(b, a, n);
+mag = abs(h); 
+phase = angle(h)*180/pi;
+subplot(2, 2, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ НІХ - фільтра'),
+xlabel('Frequency'), ylabel('Magnitude'),
+subplot(2, 2, 3), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ НІХ - фільтра'),
+xlabel('Frequency'), ylabel('Phase')
+br = [1 0.618 1];   % коефіцієнти різницевого рівняння 
 ar = 1;
-figure()
 [h, f] = freqz(br, ar, n, fs);
 mag = abs(h); 
 phase = angle(h)*180/pi;
-subplot(3, 1, 1); plot(f, mag), grid on, title('АЧХ'),
+subplot(2, 2, 2); plot(f, mag), grid on, title('АЧХ СІХ - фільтра'),
 xlabel('Frequency'), ylabel('Magnitude'),
-subplot(3, 1, 2), plot(f, unwrap(phase)), grid on, title('ФЧХ'),
+subplot(2, 2, 4), plot(f, unwrap(phase)), grid on, title('ФЧХ СІХ - фільтра'),
 xlabel('Frequency'), ylabel('Phase'),
 
 %=== Завдання #3.4 ===
 % Фільтрацію сигналу ЕКГ(файл ecg2x60.dat) режекторним фільтром
+fs = 200;
+ecg2x60 = load('ecg2x60.dat'); % сигнал ЕКГ
+ecg = ecg2x60;
+ecgf = filter(b, a, ecg);
+t = (0:length(ecg) - 1)/fs;
+figure()
+plot(t, ecg), title('Сигнал ЕКГ'), grid on, hold on, xlim([0.8 2.3]),ylabel('A, мкВ')
+plot(t, ecgf), title('Фільтрований сигнал ЕКГ'), hold off, grid on, 
 
-
-
+%=== Завдання #4.1 ===
+% АЧХ і ФЧХ цифрових інтеграторів
+% Інтегрування методом прямокутників 
+fs = 200;           % частота дискретизації
+T = 1/fs;
+b = [T, T];          % чисельник ПФ
+a = [1, -1];      % знаменник ПФ
+n = 50;  % кількість точок, що розраховуються
+figure()
+[h,w] = freqz(b, a, n);
+mag = abs(h); 
+phase = angle(h)*180/pi;
+subplot(3, 2, 1); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ прямокут.'),
+xlabel('Frequency'), ylabel('Magnitude'),
+subplot(3, 2, 2); plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ прямокут.'),
+xlabel('Frequency'), ylabel('Phase')
+% Інтегрування методом трапецій.
+b1 = [1, 1]*T/2;
+a1 = [1 -1];
+[h,w] = freqz(b1, a1, n);
+mag = abs(h); 
+phase = angle(h)*180/pi;
+subplot(3, 2, 3); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ трап.'),
+xlabel('Frequency'), ylabel('Magnitude'),
+subplot(3, 2, 4), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ трап.'),
+xlabel('Frequency'), ylabel('Phase')
+% Інтегрування методом парабол (Сімпсона)
+b2 = [1 4 1]*T/3;
+a2 = [1 0 -1];
+[h,w] = freqz(b2, a2, n);
+mag = abs(h); 
+phase = angle(h)*180/pi;
+subplot(3, 2, 5); plot(w/(2*pi)*fs,mag), grid on, title('АЧХ параб.'),
+xlabel('Frequency'), ylabel('Magnitude'),
+subplot(3, 2, 6), plot(w/(2*pi) *fs,unwrap(phase)), grid on, title('ФЧХ параб.'),
+xlabel('Frequency'), ylabel('Phase')
 
